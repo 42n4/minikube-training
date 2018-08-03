@@ -1,0 +1,12 @@
+.idea
+.git
+tests
+.dockerignore
+.editorconfig
+.gitignore
+.env.dist
+.env
+.php_cs.dist
+docker-compose.yaml
+phpunit.xml.dist
+README.md

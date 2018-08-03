@@ -1,0 +1,6 @@
+parameters:
+    env(APP_SECRET): "%env(file:/run/secrets/app-secrets/app-secrets)%"
+
+#framework:
+#    cache:
+#        system: cache.adapter.apcu

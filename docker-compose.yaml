@@ -1,0 +1,17 @@
+version: "3.5"
+
+services:
+  mailhog:
+    image: mailhog/mailhog
+  nginx:
+    build:
+      dockerfile: .docker/nginx/Dockerfile
+      context: .
+    image: enalquilertrainings/minikube-training-nginx
+    ports:
+      - "80:80"
+  php:
+    build:
+      dockerfile: .docker/php/Dockerfile
+      context: .
+    image: enalquilertrainings/minikube-training-php
