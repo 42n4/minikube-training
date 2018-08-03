@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    app.kubernetes.io/name: minikube.training
+    env: prod
+spec:
+  containers:
+    - image: nginx:alpine
+      name: nginx-from-yaml
+      ports:
+        - containerPort: 80
+          name: http
+          protocol: TCP
