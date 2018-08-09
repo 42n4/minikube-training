@@ -13,4 +13,9 @@ COPY --from=nodestage /var/www/minikube.training /tmp/www/minikube.training
 RUN rm -rf /var/www && mkdir -p /var/www
 RUN mv /tmp/www/minikube.training /var/www/minikube.training
 RUN rm -rf /var/www/minikube.training/.docker
-COPY .docker/nginx/minikube.training.nginx.conf /etc/nginx/conf.d/default.conf
+COPY .docker/nginx/minikube.training.nginx.conf /etc/nginx/conf.d/default.conf.template
+COPY .docker/nginx/nginx-entrypoint.sh /usr/local/bin/nginx-entrypoint.sh
+RUN rm -rf /etc/nginx/conf.d/default.conf
+RUN chmod a+x /usr/local/bin/nginx-entrypoint.sh
+ENTRYPOINT ["/usr/local/bin/nginx-entrypoint.sh"]
+CMD []

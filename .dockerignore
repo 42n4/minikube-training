@@ -7,6 +7,8 @@ tests
 .env.dist
 .env
 .php_cs.dist
+.minikube
 docker-compose.yaml
+docker-compose.override.yaml
 phpunit.xml.dist
 README.md

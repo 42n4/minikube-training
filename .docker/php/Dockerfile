@@ -8,8 +8,7 @@ FROM php:fpm
 COPY --from=phpstage /var/www/minikube.training /tmp/www/minikube.training
 RUN rm -rf /var/www && mkdir -p /var/www
 RUN mv /tmp/www/minikube.training /var/www/minikube.training
-RUN apt-get update -y && apt-get install -y libsqlite3-dev
-RUN docker-php-ext-install pdo_sqlite opcache
+RUN docker-php-ext-install pdo_mysql opcache
 RUN echo "opcache.enable = 1" >> /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini
 RUN echo "opcache.validate_timestamps = 0" >> /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini
 RUN echo "opcache.max_accelerated_files = 15013" >> /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini
@@ -19,3 +18,4 @@ RUN echo "opcache.fast_shutdown = 1" >> /usr/local/etc/php/conf.d/docker-php-ext
 ADD .docker/php/app-entrypoint.sh /usr/local/bin
 RUN chmod a+x /usr/local/bin/app-entrypoint.sh
 ENTRYPOINT /usr/local/bin/app-entrypoint.sh
+CMD []
