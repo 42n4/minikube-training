@@ -1,0 +1,104 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: minikube-training-database-pv
+  labels:
+    app.kubernetes.io/name: minikube.training
+    app: mysql-pv
+    env: prod
+    volume: minikube-training-database-pv
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: /var/lib/mysql
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: minikube-training-database-pv
+  labels:
+    app.kubernetes.io/name: minikube.training
+    app: mysql-pvc
+    env: prod
+spec:
+  resources:
+    requests:
+      storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  selector:
+    matchLabels:
+      volume: minikube-training-database-pv
+---
+apiVersion: extensions/v1beta1
+kind: ReplicaSet
+metadata:
+  name: mysql
+  labels:
+    app.kubernetes.io/name: minikube.training
+    app: mysql
+    env: prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: minikube.training
+        app: mysql
+        env: prod
+    spec:
+      containers:
+      - name: mysql
+        image: mysql
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-root-password
+              key: password
+        - name: MYSQL_DATABASE
+          value: minikube_training
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: mysql-user
+              key: user
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-password
+              key: password
+        ports:
+        - containerPort: 3306
+        volumeMounts:
+          - name: database
+            mountPath: "/var/lib/mysql"
+      volumes:
+      - name: database
+        persistentVolumeClaim:
+          claimName: minikube-training-database-pv
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+  labels:
+    app.kubernetes.io/name: minikube.training
+    env: prod
+spec:
+  selector:
+    app.kubernetes.io/name: minikube.training
+    app: mysql
+    env: prod
+  ports:
+    - protocol: TCP
+      port: 8025
+      targetPort: 8025
+  type: NodePort

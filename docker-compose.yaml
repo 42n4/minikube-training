@@ -29,5 +29,10 @@ services:
       dockerfile: .docker/php/Dockerfile
       context: .
     image: enalquilertrainings/minikube-training-php
+  php-cli:
+    build:
+      dockerfile: .docker/php-cli/Dockerfile
+      context: .
+    image: enalquilertrainings/minikube-training-php:cli
 volumes:
   mysql:

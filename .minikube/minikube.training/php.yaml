@@ -1,0 +1,43 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minikube-training-php
+  labels:
+    app.kubernetes.io/name: minikube.training
+    app: minikube-training-php
+    env: prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minikube-training-php
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: minikube.training
+        app: php
+        env: prod
+    spec:
+      containers:
+        - image: enalquilertrainings/minikube-training-php
+          name: minikube-training-php
+          imagePullPolicy: Always
+      imagePullSecrets:
+        - name: regcred
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: php
+  labels:
+    app.kubernetes.io/name: minikube.training
+    env: prod
+spec:
+  selector:
+    name: php-pod
+  ports:
+    - protocol: TCP
+      port: 9000
+      targetPort: 9000
+  type: NodePort

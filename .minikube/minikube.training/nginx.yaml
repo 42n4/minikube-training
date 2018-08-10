@@ -1,0 +1,59 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app.kubernetes.io/name: minikube.training
+    app: minikube-training-nginx
+    env: prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minikube-training-nginx
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: minikube.training
+        app: nginx
+        env: prod
+    spec:
+      containers:
+      - image: enalquilertrainings/minikube-training-nginx
+        imagePullPolicy: Always
+        name: minikube-training-nginx
+        ports:
+        - containerPort: 80
+          name: http
+          protocol: TCP
+        env:
+        - name: BACKEND
+          value: php
+        volumeMounts:
+          - name: minikube-training-params
+            mountPath: /run/secrets/minikube_training_params
+            readOnly: true
+      volumes:
+        - name: minikube-training-params
+          secret:
+            secretName: minikube-training-params
+      imagePullSecrets:
+      - name: regcred
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  labels:
+    app.kubernetes.io/name: minikube.training
+    env: prod
+spec:
+  selector:
+    app.kubernetes.io/name: minikube.training
+    app: nginx
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  type: NodePort
