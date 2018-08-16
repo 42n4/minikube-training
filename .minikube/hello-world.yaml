@@ -1,15 +1,13 @@
 ---
-apiVersion: batch/v1
-kind: Job
+apiVersion: v1
+kind: Pod
 metadata:
-  name: hello-world2
+  name: hello-world
   labels:
     app.kubernetes.io/name: minikube.training
     env: prod
 spec:
-  template:
-    spec:
-      containers:
-      - image: hello-world
-        name: hello-world-from-yaml
-      restartPolicy: Never
+  containers:
+    - image: hello-world
+      name: hello-world-from-yaml
+  restartPolicy: Never

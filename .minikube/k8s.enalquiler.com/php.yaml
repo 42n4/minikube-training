@@ -1,0 +1,79 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: symfony-demo-php-deployment
+  namespace: symfony-demo
+  labels:
+    app: symfony-demo
+    env: prod
+    version: "4"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: symfony-demo
+      component: php
+      env: prod
+  template:
+    metadata:
+      namespace: symfony-demo
+      labels:
+        app: symfony-demo
+        component: php
+        env: prod
+    spec:
+      containers:
+      - image: enalquilertrainings/minikube-training-php
+        name: symfony-demo-php
+        imagePullPolicy: Always
+        resources:
+          limits:
+            memory: "2.5Gi"
+        env:
+        - name: APP_ENV
+          valueFrom:
+            secretKeyRef:
+              name: symfony-demo-cli-params
+              key: app_env
+        - name: APP_DEBUG
+          valueFrom:
+            secretKeyRef:
+              name: symfony-demo-cli-params
+              key: app_debug
+        - name: APP_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: symfony-demo-cli-params
+              key: app_secret
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: symfony-demo-cli-params
+              key: database_url
+        - name: MAILER_URL
+          valueFrom:
+            secretKeyRef:
+              name: symfony-demo-cli-params
+              key: mailer_url
+      imagePullSecrets:
+      - name: enalquiler-registry
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: php
+  namespace: symfony-demo
+  labels:
+    app: symfony-demo
+    component: php
+    env: prod
+spec:
+  selector:
+    app: symfony-demo
+    component: php
+    env: prod
+  ports:
+    - protocol: TCP
+      port: 9000
+      targetPort: 9000

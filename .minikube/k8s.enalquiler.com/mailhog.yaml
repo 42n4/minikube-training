@@ -1,0 +1,49 @@
+---
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: mailhog-rs
+  namespace: symfony-demo
+  labels:
+    app: symfony-demo
+    env: prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: symfony-demo
+      env: prod
+      component: mta
+  template:
+    metadata:
+      namespace: symfony-demo
+      labels:
+        app: symfony-demo
+        env: prod
+        component: mta
+    spec:
+      containers:
+        - image: mailhog/mailhog
+          name: mailhog
+          ports:
+            - containerPort: 1025
+              name: http
+              protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mailhog
+  namespace: symfony-demo
+  labels:
+    app: symfony-demo
+    env: prod
+spec:
+  selector:
+    app: symfony-demo
+    env: prod
+    component: mta
+  ports:
+    - protocol: TCP
+      port: 1025
+      targetPort: 1025

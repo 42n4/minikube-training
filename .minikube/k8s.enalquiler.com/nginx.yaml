@@ -1,0 +1,55 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  namespace: symfony-demo
+  labels:
+    app: symfony-demo
+    env: prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: symfony-demo
+      component: webserver
+      env: prod
+  template:
+    metadata:
+      namespace: symfony-demo
+      labels:
+        app: symfony-demo
+        component: webserver
+        env: prod
+    spec:
+      containers:
+      - image: enalquilertrainings/minikube-training-nginx
+        imagePullPolicy: Always
+        name: symfony-demo-nginx
+        ports:
+        - containerPort: 80
+          name: http
+          protocol: TCP
+        env:
+        - name: BACKEND
+          value: php
+      imagePullSecrets:
+      - name: enalquiler-registry
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  namespace: symfony-demo
+  labels:
+    app: symfony-demo
+    env: prod
+spec:
+  selector:
+    app: symfony-demo
+    component: webserver
+    env: prod
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
