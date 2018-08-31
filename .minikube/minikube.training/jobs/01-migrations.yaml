@@ -1,0 +1,43 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: database-migrations
+  namespace: minikube-training
+spec:
+  template:
+    metadata:
+      namespace: minikube-training
+    spec:
+      containers:
+      - name: database-migrations
+        image: enalquilertrainings/minikube-training-php:cli
+        command: ["php",  "bin/console", "doc:mig:m", "--no-interaction"]
+        env:
+        - name: APP_SECRET_FILE
+          value: /run/secrets/app_secret/app_secret
+        - name: DATABASE_URL_FILE
+          value: /run/secrets/database_url/database_url
+        envFrom:
+        - configMapRef:
+            name: minikube-training-config
+        volumeMounts:
+        - mountPath: /run/secrets/app_secret
+          name: app-secret
+        - mountPath: /run/secrets/database_url
+          name: database-url
+      volumes:
+      - name: app-secret
+        secret:
+          secretName: minikube-training-secrets
+          items:
+          - key: app_secret
+            path: app_secret
+      - name: database-url
+        secret:
+          secretName: minikube-training-secrets
+          items:
+          - key: database_url
+            path: database_url
+      restartPolicy: Never
+  backoffLimit: 4

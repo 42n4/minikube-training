@@ -2,7 +2,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: nginx-ingress
-  namespace: symfony-demo
+  namespace: minikube-training
 spec:
   backend:
     serviceName: nginx

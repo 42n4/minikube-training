@@ -20,5 +20,4 @@ RUN echo "opcache.memory_consumption = 256M" >> /usr/local/etc/php/conf.d/docker
 RUN echo "opcache.interned_strings_buffer = 32" >> /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini
 RUN echo "opcache.fast_shutdown = 1" >> /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini
 RUN echo "memory_limit = -1" >> /usr/local/etc/php/conf.d/custom.ini
-RUN cd /var/www/minikube.training && APP_ENV=prod APP_DEBUG=0 php bin/console cache:warmup
 RUN chown -R www-data: /var/www

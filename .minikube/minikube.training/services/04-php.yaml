@@ -1,0 +1,63 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: php
+  namespace: minikube-training
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: php
+  template:
+    metadata:
+      namespace: minikube-training
+      labels:
+        service: php
+    spec:
+      containers:
+      - image: enalquilertrainings/minikube-training-php
+        name: minikube-training-php
+        ports:
+        - containerPort: 9000
+          protocol: TCP
+        env:
+        - name: APP_SECRET_FILE
+          value: /run/secrets/app_secret/app_secret
+        - name: DATABASE_URL_FILE
+          value: /run/secrets/database_url/database_url
+        envFrom:
+        - configMapRef:
+            name: minikube-training-config
+        volumeMounts:
+        - mountPath: /run/secrets/app_secret
+          name: app-secret
+        - mountPath: /run/secrets/database_url
+          name: database-url
+      volumes:
+      - name: app-secret
+        secret:
+          secretName: minikube-training-secrets
+          items:
+          - key: app_secret
+            path: app_secret
+      - name: database-url
+        secret:
+          secretName: minikube-training-secrets
+          items:
+          - key: database_url
+            path: database_url
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: php
+  namespace: minikube-training
+spec:
+  selector:
+    service: php
+  ports:
+  - protocol: TCP
+    port: 9000
+    targetPort: 9000
+  type: NodePort

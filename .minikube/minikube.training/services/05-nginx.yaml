@@ -1,0 +1,41 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  namespace: minikube-training
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: nginx
+  template:
+    metadata:
+      namespace: minikube-training
+      labels:
+        service: nginx
+    spec:
+      containers:
+      - image: enalquilertrainings/minikube-training-nginx
+        name: nginx
+        ports:
+        - containerPort: 80
+          name: http
+          protocol: TCP
+        env:
+        - name: BACKEND
+          value: php
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  namespace: minikube-training
+spec:
+  selector:
+    service: nginx
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  type: NodePort

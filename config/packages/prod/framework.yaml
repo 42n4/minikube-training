@@ -1,3 +1,6 @@
+parameters:
+  env(APP_SECRET): "%env(file:APP_SECRET_FILE)%"
+
 #framework:
 #    cache:
 #        system: cache.adapter.apcu

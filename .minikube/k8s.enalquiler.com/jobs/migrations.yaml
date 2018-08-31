@@ -1,0 +1,30 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: database-migrations
+  namespace: minikube-training
+  labels:
+    app: minikube-training
+    env: prod
+spec:
+  template:
+    metadata:
+      namespace: minikube-training
+      labels:
+        app: minikube-training
+        env: prod
+    spec:
+      containers:
+      - name: database-migrations
+        image: enalquilertrainings/minikube-training-php:cli
+        imagePullPolicy: Always
+        command: ["php", "bin/console", "doc:mig:m", "--no-interaction"]
+        envFrom:
+          - configMapRef:
+              name: minikube-training-config
+          - secretRef:
+              name: minikube-training-secret
+      restartPolicy: Never
+      imagePullSecrets:
+      - name: enalquiler-registry

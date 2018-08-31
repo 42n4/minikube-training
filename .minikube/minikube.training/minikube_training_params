@@ -1,5 +1,0 @@
-fastcgi_param APP_ENV prod;
-fastcgi_param APP_DEBUG 0;
-fastcgi_param APP_SECRET GqZPLjtRYsZCCJYmJSGEEeYj;
-fastcgi_param DATABASE_URL mysql://minikube_training:33wfV8j2CfTXjtAPQdSqxrzg@mysql:3306/minikube_training?charset=utf8
-fastcgi_param MAILER_URL smtp://mailhog:8025;

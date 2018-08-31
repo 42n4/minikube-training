@@ -1,0 +1,39 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mailhog
+  namespace: minikube-training
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: mailhog
+  template:
+    metadata:
+      name: mailhog
+      namespace: minikube-training
+      labels:
+        service: mailhog
+    spec:
+      containers:
+      - image: mailhog/mailhog
+        name: mailhog
+        ports:
+        - containerPort: 8025
+          name: http
+          protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mailhog
+  namespace: minikube-training
+spec:
+  selector:
+    service: mailhog
+  ports:
+  - protocol: TCP
+    port: 8025
+    targetPort: 8025
+  type: NodePort

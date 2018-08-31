@@ -1,0 +1,58 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minikube-training-php-deployment
+  namespace: minikube-training
+  labels:
+    app: minikube-training
+    env: prod
+    version: "4"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minikube-training
+      component: php
+      env: prod
+  template:
+    metadata:
+      namespace: minikube-training
+      labels:
+        app: minikube-training
+        component: php
+        env: prod
+    spec:
+      containers:
+      - image: enalquilertrainings/minikube-training-php
+        name: minikube-training-php
+        imagePullPolicy: Always
+        resources:
+          limits:
+            memory: "2.5Gi"
+        envFrom:
+          - configMapRef:
+              name: minikube-training-config
+          - secretRef:
+              name: minikube-training-secret
+      imagePullSecrets:
+      - name: enalquiler-registry
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: php
+  namespace: minikube-training
+  labels:
+    app: minikube-training
+    component: php
+    env: prod
+spec:
+  selector:
+    app: minikube-training
+    component: php
+    env: prod
+  ports:
+    - protocol: TCP
+      port: 9000
+      targetPort: 9000
