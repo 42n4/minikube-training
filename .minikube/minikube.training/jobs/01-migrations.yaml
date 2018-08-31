@@ -12,6 +12,7 @@ spec:
       containers:
       - name: database-migrations
         image: enalquilertrainings/minikube-training-php:cli
+        imagePullPolicy: Always
         command: ["php",  "bin/console", "doc:mig:m", "--no-interaction"]
         env:
         - name: APP_SECRET_FILE
@@ -40,4 +41,4 @@ spec:
           - key: database_url
             path: database_url
       restartPolicy: Never
-  backoffLimit: 4
+  backoffLimit: 0

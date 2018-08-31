@@ -14,9 +14,9 @@ spec:
         image: enalquilertrainings/minikube-training-php:cli
         command: ["php",  "bin/console", "doc:fixtures:load", "--no-interaction", "--verbose"]
         env:
-        - name: APP_SECRET
+        - name: APP_SECRET_FILE
           value: /run/secrets/app_secret/app_secret
-        - name: DATABASE_URL
+        - name: DATABASE_URL_FILE
           value: /run/secrets/database_url/database_url
         envFrom:
         - configMapRef:
